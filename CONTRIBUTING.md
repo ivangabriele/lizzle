@@ -47,9 +47,6 @@ yarn db:migrate
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": "**/.github/workflows/build.yml"
   }
 }
 ```
