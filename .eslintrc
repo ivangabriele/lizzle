@@ -1,0 +1,21 @@
+{
+  "extends": ["@ivangabriele/eslint-config-typescript-next"],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "extraFileExtensions": [".cjs"],
+    "project": "./tsconfig.dev.json"
+  },
+  "ignorePatterns": ["next-env.d.ts"],
+  "plugins": ["formatjs"],
+  "rules": {
+    "no-console": ["error", { "allow": ["error"] }],
+
+    "@typescript-eslint/no-use-before-define": "off",
+
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+
+    "react/jsx-props-no-spreading": ["error", { "exceptions": ["Component"] }],
+    "react/require-default-props": "off"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "extends": "@ivangabriele/tsconfig-next",
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "incremental": true,
+    "isolatedModules": true,
+    "paths": {
+      "@api/*": ["api/*"],
+      "@app/*": ["app/*"],
+      "@common/*": ["common/*"],
+      "@prisma/*": ["prisma/*"]
+    }
+  },
+  "include": ["**/*.js", "**/*.ts", "**/*.tsx", "next-env.d.ts", "next.config.cjs"],
+  "exclude": [".next/*", "config/*", "node_modules/*"]
+}

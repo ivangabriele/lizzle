@@ -1,0 +1,16 @@
+services:
+  db:
+    container_name: lichess_trainer_db
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: lichess_trainer
+      POSTGRES_USER: dev_db_user
+      POSTGRES_PASSWORD: dev_db_password
+    volumes:
+      - postgre-data:/var/lib/postgresql/data
+    ports:
+      - 5442:5432
+
+volumes:
+  postgre-data:
