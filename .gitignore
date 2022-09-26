@@ -161,8 +161,8 @@ dist
 ################################################################################
 # Custom
 
-# /.yars/sdks
-# /prisma/generations
+/.yarn/sdks
+/prisma/generations
 
 /*.bz2
 /*.csv
