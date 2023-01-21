@@ -8,9 +8,9 @@ if [ -f "./.env" ]; then
   export $(egrep -v '^#' ./.env | xargs) > /dev/null
 fi
 
-yarn pnpify prisma generate
-
 if [ -z "$CI" ] && [ "${NODE_ENV}" != "production" ]; then
-  yarn dlx @yarnpkg/sdks
+  cp ./.env.example ./.env
   yarn husky install
 fi
+
+yarn pnpify prisma generate

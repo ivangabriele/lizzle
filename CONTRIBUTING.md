@@ -11,6 +11,8 @@
 
 ```sh
 yarn
+yarn dev:setup
+yarn dev:setup:vscode # Visual Studio Code
 yarn dev:docker
 yarn db:migrate
 ```
