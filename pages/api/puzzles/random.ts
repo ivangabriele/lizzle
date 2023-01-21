@@ -19,6 +19,16 @@ export default async function PuzzleRandomEndpoint(req: NextApiRequest, res: Nex
     take: 1,
     where,
   })
+  if (!puzzles.length) {
+    res.status(404).json({
+      hasError: true,
+      message: 'Not puzzle available.',
+      status: 404,
+    })
+
+    return
+  }
+
   const puzzle = puzzles[0]
 
   res.status(200).json({

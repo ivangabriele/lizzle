@@ -32,6 +32,7 @@ export default function MetiersNumeriquesApp({ Component, pageProps }: AppProps)
   return (
     <>
       <GlobalStyle />
+
       <Component {...pageProps} />
     </>
   )

@@ -1,4 +1,4 @@
-import ky from 'ky'
+import ky, { HTTPError } from 'ky'
 import dynamic from 'next/dynamic'
 import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -33,32 +33,41 @@ export default function HomePage() {
   const loadRandomPuzzle = useCallback(async () => {
     setIsLoading(true)
 
-    const path = 'api/puzzles/random'
-    const responseData = await ky
-      .get(path, {
-        searchParams: {
-          maxRating: 1500,
-          minRating: 1300,
-        },
-      })
-      .json<
-        | {
-            data: Puzzle
-            hasError: false
-          }
-        | {
-            hasError: true
-            message: string
-            status: number
-          }
-      >()
-    if (responseData.hasError) {
-      console.error(responseData.message)
+    try {
+      const path = 'api/puzzles/random'
+      const responseData = await ky
+        .get(path, {
+          searchParams: {
+            maxRating: 1500,
+            minRating: 1300,
+          },
+        })
+        .json<
+          | {
+              data: Puzzle
+              hasError: false
+            }
+          | {
+              hasError: true
+              message: string
+              status: number
+            }
+        >()
+      if (responseData.hasError) {
+        console.error(responseData.message)
 
-      return
+        return
+      }
+
+      setRandomPuzzle(responseData.data)
+    } catch (err) {
+      if (err instanceof HTTPError) {
+        console.info('API Error:', (await err.response.json()).message)
+      } else {
+        console.info('Unknown Error:', err)
+      }
     }
 
-    setRandomPuzzle(responseData.data)
     setIsLoading(false)
   }, [])
 
