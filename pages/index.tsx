@@ -3,11 +3,11 @@ import dynamic from 'next/dynamic'
 import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import type { BoardProps } from '@app/molecules/Board'
+import type { BoardProps } from '@frontend/molecules/Board'
 import type { Puzzle } from '@prisma/generations'
 
 const DynamicBoard: ComponentType<BoardProps> = dynamic(
-  (): any => import('@app/molecules/Board').then(module => module.Board),
+  (): any => import('@frontend/molecules/Board').then(module => module.Board),
   {
     ssr: false,
   },

@@ -1,4 +1,4 @@
-import { prisma } from '@api/libs/prisma'
+import { prisma } from '@backend/libs/prisma'
 import { Prisma } from '@prisma/generations'
 
 import type { NextApiRequest, NextApiResponse } from 'next'

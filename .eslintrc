@@ -6,7 +6,6 @@
     "project": "./tsconfig.dev.json"
   },
   "ignorePatterns": ["next-env.d.ts"],
-  "plugins": ["formatjs"],
   "rules": {
     "no-console": ["error", { "allow": ["error"] }],
 

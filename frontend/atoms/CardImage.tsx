@@ -17,6 +17,7 @@ type CardImageProps = HtmlHTMLAttributes<HTMLDivElement> & {
   src: string
 }
 export function CardImage({ src, ...props }: CardImageProps) {
+  // eslint-disable-next-line no-null/no-null
   const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export function CardImage({ src, ...props }: CardImageProps) {
     }
 
     boxRef.current.style.height = `${boxRef.current.clientWidth}px`
-  }, [boxRef.current])
+  }, [])
 
   // eslint-disable-next-line react/jsx-props-no-spreading
   return <Box ref={boxRef} backgroundImageUrl={src} {...props} />

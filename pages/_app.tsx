@@ -1,10 +1,11 @@
 import { createGlobalStyle } from 'styled-components'
 
+import type { AppProps } from 'next/app'
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'chessground/assets/chessground.base.css'
 import 'chessground/assets/chessground.brown.css'
 import 'chessground/assets/chessground.cburnett.css'
-import type { AppProps } from 'next/app'
 
 const GlobalStyle: any = createGlobalStyle`
   * {

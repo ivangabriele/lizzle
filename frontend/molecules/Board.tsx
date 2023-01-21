@@ -1,5 +1,5 @@
-import { Engine, EngineState } from '@app/libs/Engine'
 import { Chessground } from 'chessground'
+import { Engine, EngineState } from 'frontend/libs/Engine'
 import { map, mergeDeepRight } from 'ramda'
 import { useCallback, useEffect, useRef } from 'react'
 import styled from 'styled-components'
@@ -44,11 +44,12 @@ export type BoardProps = {
   moves?: string[]
   onEnd: () => void
 }
-export function Board(props: BoardProps) {
-  const { fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onEnd } = props
+export function Board({ fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onEnd }: BoardProps) {
   const movesAsPairs = map(convertMoveToPair)(moves || [])
 
+  // eslint-disable-next-line no-null/no-null
   const anchorElementRef = useRef<HTMLDivElement | null>(null)
+  // eslint-disable-next-line no-null/no-null
   const boxElementRef = useRef<HTMLDivElement | null>(null)
   const chessgroundRef = useRef<Api | undefined>()
   const engineRef = useRef<Engine>(new Engine(fen, isPuzzle))
@@ -76,7 +77,25 @@ export function Board(props: BoardProps) {
         dests: engineRef.current.getDestinations(),
       },
     })
-  }, [props])
+  }, [])
+
+  const playOponentMove = useCallback(() => {
+    if (!chessgroundRef.current) {
+      return
+    }
+
+    const [oponentFrom, oponentTo] = movesAsPairs[moveIndexRef.current]
+    engineRef.current.move(oponentFrom as any, oponentTo as any)
+    soundRef.current[engineRef.current.state].play()
+    chessgroundRef.current.move(oponentFrom, oponentTo)
+    chessgroundRef.current.set({
+      movable: {
+        dests: engineRef.current.getDestinations(),
+      },
+    })
+
+    moveIndexRef.current += 1
+  }, [movesAsPairs])
 
   const checkPlayerMove = useCallback(
     (playerFrom: Key, playerTo: Key) => {
@@ -121,26 +140,8 @@ export function Board(props: BoardProps) {
         },
       })
     },
-    [props],
+    [cancelPlayerMove, isPuzzle, movesAsPairs, onEnd, playOponentMove],
   )
-
-  const playOponentMove = useCallback(() => {
-    if (!chessgroundRef.current) {
-      return
-    }
-
-    const [oponentFrom, oponentTo] = movesAsPairs[moveIndexRef.current]
-    engineRef.current.move(oponentFrom as any, oponentTo as any)
-    soundRef.current[engineRef.current.state].play()
-    chessgroundRef.current.move(oponentFrom, oponentTo)
-    chessgroundRef.current.set({
-      movable: {
-        dests: engineRef.current.getDestinations(),
-      },
-    })
-
-    moveIndexRef.current += 1
-  }, [props])
 
   useEffect(() => {
     if (!anchorElementRef.current || !boxElementRef.current) {
@@ -168,7 +169,7 @@ export function Board(props: BoardProps) {
     if (isPuzzle && movesAsPairs.length) {
       playOponentMove()
     }
-  }, [props])
+  }, [checkPlayerMove, fen, isPuzzle, movesAsPairs.length, playOponentMove])
 
   return (
     <Box ref={boxElementRef}>
