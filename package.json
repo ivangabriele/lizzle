@@ -11,7 +11,7 @@
     "yarn": "3"
   },
   "scripts": {
-    "build": "next build",
+    "build": "sh ./scripts/build/build.sh",
     "data:sync": "sh ./scripts/data/synchronize.sh",
     "db:generate": "yarn pnpify prisma generate",
     "db:migrate": "prisma migrate deploy && yarn db:generate",
