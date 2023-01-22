@@ -1,15 +1,17 @@
+import { usePrevious } from '@frontend/hooks/usePrevious'
+import { AudioPlayer, AudioPlayerCustomSound } from '@frontend/libs/AudioPlayer'
 import { Chessground } from 'chessground'
-import { Game, GameState } from 'frontend/libs/Game'
+import { Game } from 'frontend/libs/Game'
 import { map, mergeDeepRight } from 'ramda'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 
-import type { Api } from 'chessground/api'
-import type { Config } from 'chessground/config'
+import type { Api as ChessgroundApi } from 'chessground/api'
+import type { Config as ChessgroundConfig } from 'chessground/config'
 import type { FEN, Key } from 'chessground/types'
 import type { Promisable } from 'type-fest'
 
-const DEFAULT_CONFIG: Config & {
+const DEFAULT_CONFIG: ChessgroundConfig & {
   fen: FEN
 } = {
   coordinates: false,
@@ -24,41 +26,35 @@ const DEFAULT_CONFIG: Config & {
   },
 }
 
+const audioPlayer = new AudioPlayer()
 const convertMoveToPair = (move: string): Key[] => move.match(/.{2}/g) as any
 
 export type BoardProps = {
-  fen?: FEN
+  fen: FEN
   isPuzzle?: boolean
   moves?: string[]
   onChange: (nextFen: FEN) => Promisable<void>
   onEnd: () => Promisable<void>
 }
-export function Board({ fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onChange, onEnd }: BoardProps) {
+export function Board({ fen, isPuzzle = false, moves, onChange, onEnd }: BoardProps) {
   // eslint-disable-next-line no-null/no-null
   const anchorElementRef = useRef<HTMLDivElement | null>(null)
   // eslint-disable-next-line no-null/no-null
   const boxElementRef = useRef<HTMLDivElement | null>(null)
-  const chessgroundRef = useRef<Api | undefined>()
+  const chessgroundRef = useRef<ChessgroundApi | undefined>(undefined)
   const gameRef = useRef<Game>(new Game(fen, isPuzzle))
+  const isFirstLoadRef = useRef(true)
   const moveIndexRef = useRef<number>(0)
-  const soundRef = useRef<Record<GameState, HTMLAudioElement>>({
-    [GameState.CAPTURE]: new Audio('/sounds/capture.ogg'),
-    [GameState.CHECK]: new Audio('/sounds/silence.ogg'),
-    [GameState.DEFEAT]: new Audio('/sounds/defeat.ogg'),
-    [GameState.DRAW]: new Audio('/sounds/draw.ogg'),
-    [GameState.MOVE]: new Audio('/sounds/move.ogg'),
-    [GameState.VICTORY]: new Audio('/sounds/victory.ogg'),
-  })
 
   const movesAsPairs = useMemo(() => map(convertMoveToPair)(moves || []), [moves])
+  const previousFen = usePrevious(fen)
 
   const cancelPlayerMove = useCallback(() => {
     if (!chessgroundRef.current) {
       return
     }
 
-    const failureAudio = new Audio('/sounds/failure.ogg')
-    failureAudio.play()
+    audioPlayer.play(AudioPlayerCustomSound.CONFIRMATION)
 
     chessgroundRef.current.set({
       fen: gameRef.current.fen,
@@ -75,7 +71,7 @@ export function Board({ fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onCha
 
     const [oponentFrom, oponentTo] = movesAsPairs[moveIndexRef.current]
     gameRef.current.move(oponentFrom as any, oponentTo as any)
-    soundRef.current[gameRef.current.state].play()
+    audioPlayer.play(gameRef.current.state)
     chessgroundRef.current.move(oponentFrom, oponentTo)
     chessgroundRef.current.set({
       movable: {
@@ -113,10 +109,9 @@ export function Board({ fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onCha
 
       if (moveIndexRef.current === movesAsPairs.length) {
         if (isPuzzle) {
-          const confirmationAudio = new Audio('/sounds/confirmation.ogg')
-          confirmationAudio.play()
+          audioPlayer.play(AudioPlayerCustomSound.CONFIRMATION, 0.1)
         } else {
-          soundRef.current[gameRef.current.state].play()
+          audioPlayer.play(gameRef.current.state)
         }
 
         setTimeout(onEnd, 500)
@@ -124,7 +119,7 @@ export function Board({ fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onCha
         return
       }
 
-      soundRef.current[gameRef.current.state].play()
+      audioPlayer.play(gameRef.current.state)
 
       if (isPuzzle) {
         playOponentMove()
@@ -146,12 +141,18 @@ export function Board({ fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onCha
       return
     }
 
-    const size = Math.round(window.screen.height * 0.67)
-    boxElementRef.current.style.alignItems = `center`
-    boxElementRef.current.style.height = `${size}px`
-    boxElementRef.current.style.width = `${size}px`
+    if (isFirstLoadRef.current) {
+      const size = Math.round(window.screen.height * 0.67)
+      boxElementRef.current.style.alignItems = `center`
+      boxElementRef.current.style.height = `${size}px`
+      boxElementRef.current.style.width = `${size}px`
 
-    const customConfig: Config = {
+      isFirstLoadRef.current = false
+    }
+
+    const nextGame = new Game(fen, isPuzzle)
+
+    const nextChessgroundCustomConfig: ChessgroundConfig = {
       fen,
       movable: {
         // color: gameRef.current.initialTurnColor,
@@ -162,14 +163,17 @@ export function Board({ fen = DEFAULT_CONFIG.fen, isPuzzle = false, moves, onCha
       },
       orientation: gameRef.current.initialTurnColor,
     }
-    const config: Config = mergeDeepRight(DEFAULT_CONFIG, customConfig) as any
-    chessgroundRef.current = Chessground(anchorElementRef.current, config)
+    const nextChessgroundConfig: ChessgroundConfig = mergeDeepRight(DEFAULT_CONFIG, nextChessgroundCustomConfig) as any
+    const nextChessground = Chessground(anchorElementRef.current, nextChessgroundConfig)
+
+    chessgroundRef.current = nextChessground
+    gameRef.current = nextGame
     moveIndexRef.current = 0
 
     if (isPuzzle && movesAsPairs.length) {
       playOponentMove()
     }
-  }, [checkPlayerMove, fen, isPuzzle, movesAsPairs.length, playOponentMove])
+  }, [checkPlayerMove, fen, isPuzzle, movesAsPairs.length, playOponentMove, previousFen])
 
   return (
     <Box ref={boxElementRef}>

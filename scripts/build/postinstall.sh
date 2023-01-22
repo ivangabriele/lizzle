@@ -13,4 +13,4 @@ if [ -z "$CI" ] && [ "${NODE_ENV}" != "production" ]; then
   yarn husky install
 fi
 
-yarn pnpify prisma generate
+yarn db:generate

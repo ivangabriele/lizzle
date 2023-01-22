@@ -10,7 +10,7 @@ import { Toolbar } from '@frontend/organisms/Toolbar'
 import ky, { HTTPError } from 'ky'
 import dynamic from 'next/dynamic'
 import { last } from 'ramda'
-import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ComponentType, useCallback, useEffect, useRef, useState } from 'react'
 import { ClockLoader } from 'react-spinners'
 import styled from 'styled-components'
 
@@ -40,11 +40,10 @@ export default function HomePage() {
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isReady, setIsReady] = useState(false)
-  const [levelRange, setLevelRange] = useState<[number, number]>([1000, 1500])
+  const [levelRange, setLevelRange] = useState<[number, number] | undefined>(undefined)
   const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle | undefined>()
   const [currentPuzzleAnalysisFen, setCurrentPuzzleAnalysisFen] = useState<FEN>(DEFAULT_FEN)
 
-  const boardKey = useMemo(() => (currentPuzzle ? currentPuzzle.fen : 'undefined'), [currentPuzzle])
   const debouncedLevelRange = useDebouncedValue(levelRange, 500)
   const lastPuzzleAnalysisFen = usePrevious(currentPuzzleAnalysisFen)
 
@@ -61,6 +60,10 @@ export default function HomePage() {
 
   const loadRandomPuzzles = useCallback(
     async (isPreload: boolean = false) => {
+      if (!debouncedLevelRange) {
+        return
+      }
+
       if (!isPreload) {
         setIsLoading(true)
       }
@@ -131,7 +134,7 @@ export default function HomePage() {
     setCurrentPuzzle(nextPuzzle)
   }, [loadRandomPuzzles])
 
-  const updateAnalysisFen = useCallback((nextFen: FEN) => {
+  const updateCurrentPuzzleAnalysisFen = useCallback((nextFen: FEN) => {
     if (isAnalysisFenLoaded.current) {
       return
     }
@@ -184,11 +187,10 @@ export default function HomePage() {
 
             {!isLoading && currentPuzzle !== undefined && (
               <DynamicBoard
-                key={boardKey}
                 fen={currentPuzzle.fen}
                 isPuzzle
                 moves={currentPuzzle.moves}
-                onChange={updateAnalysisFen}
+                onChange={updateCurrentPuzzleAnalysisFen}
                 onEnd={loadNextPuzzle}
               />
             )}
@@ -202,7 +204,7 @@ export default function HomePage() {
         <Footer>
           {isReady && <Toolbar onAnalysisRequest={() => openAnalysis(currentPuzzleAnalysisFen)} />}
           {currentPuzzle !== undefined && <PuzzleInfo puzzle={currentPuzzle} />}
-          {isReady && <LevelControl defaultValue={debouncedLevelRange} onChange={updateLevelRange} />}
+          {debouncedLevelRange && <LevelControl defaultValue={debouncedLevelRange} onChange={updateLevelRange} />}
         </Footer>
 
         {isAnalysisOpen && (

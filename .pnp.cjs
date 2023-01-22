@@ -77,6 +77,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["next", "virtual:57112617e2e222a4ae14915069721c659584bf3e9a29e353c03989bacdd935ab7ff4d690157f4c69312a5532e17b331553f06a632bcd9aef3a3737133bee2fc8#npm:13.1.4"],\
             ["numeral", "npm:2.0.6"],\
             ["ora", "npm:6.1.2"],\
+            ["p-queue", "npm:7.3.0"],\
             ["prettier", "npm:2.8.3"],\
             ["prisma", "npm:4.9.0"],\
             ["ramda", "npm:0.28.0"],\
@@ -4301,6 +4302,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["eventemitter3", [\
+        ["npm:4.0.7", {\
+          "packageLocation": "./.yarn/cache/eventemitter3-npm-4.0.7-7afcdd74ae-1875311c42.zip/node_modules/eventemitter3/",\
+          "packageDependencies": [\
+            ["eventemitter3", "npm:4.0.7"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["execa", [\
         ["npm:5.1.1", {\
           "packageLocation": "./.yarn/cache/execa-npm-5.1.1-191347acf5-fba9022c8c.zip/node_modules/execa/",\
@@ -5621,6 +5631,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["next", "virtual:57112617e2e222a4ae14915069721c659584bf3e9a29e353c03989bacdd935ab7ff4d690157f4c69312a5532e17b331553f06a632bcd9aef3a3737133bee2fc8#npm:13.1.4"],\
             ["numeral", "npm:2.0.6"],\
             ["ora", "npm:6.1.2"],\
+            ["p-queue", "npm:7.3.0"],\
             ["prettier", "npm:2.8.3"],\
             ["prisma", "npm:4.9.0"],\
             ["ramda", "npm:0.28.0"],\
@@ -6468,6 +6479,26 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["p-map", "npm:4.0.0"],\
             ["aggregate-error", "npm:3.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["p-queue", [\
+        ["npm:7.3.0", {\
+          "packageLocation": "./.yarn/cache/p-queue-npm-7.3.0-ad6f2467da-eda8b8d4da.zip/node_modules/p-queue/",\
+          "packageDependencies": [\
+            ["p-queue", "npm:7.3.0"],\
+            ["eventemitter3", "npm:4.0.7"],\
+            ["p-timeout", "npm:5.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["p-timeout", [\
+        ["npm:5.1.0", {\
+          "packageLocation": "./.yarn/cache/p-timeout-npm-5.1.0-11ca554b60-f5cd4e1730.zip/node_modules/p-timeout/",\
+          "packageDependencies": [\
+            ["p-timeout", "npm:5.1.0"]\
           ],\
           "linkType": "HARD"\
         }]\
