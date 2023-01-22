@@ -9,8 +9,13 @@ if [ -f "./.env" ]; then
 fi
 
 if [ -z "$CI" ] && [ "${NODE_ENV}" != "production" ]; then
+  echo "Generating .env file..."
   cp ./.env.example ./.env
   yarn husky install
+else
+  echo "Removing .env file..."
+  rm -f ./.env
 fi
 
+echo "Generating Prisma runtime files..."
 yarn db:generate
