@@ -1,10 +1,10 @@
 import { prisma } from '@backend/libs/prisma'
-import { Prisma } from '@prisma/generations'
 
+import type { Prisma } from '@prisma/generations'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function PuzzleRandomEndpoint(req: NextApiRequest, res: NextApiResponse) {
-  const { maxRating, minRating } = req.query
+  const { length = 1, maxRating, minRating } = req.query
 
   const where: Prisma.PuzzleFindManyArgs['where'] = {
     rating: {
@@ -16,7 +16,7 @@ export default async function PuzzleRandomEndpoint(req: NextApiRequest, res: Nex
   const skip = Math.floor(Math.random() * puzzlesCount)
   const puzzles = await prisma.puzzle.findMany({
     skip,
-    take: 1,
+    take: Number(length),
     where,
   })
   if (!puzzles.length) {
@@ -29,10 +29,8 @@ export default async function PuzzleRandomEndpoint(req: NextApiRequest, res: Nex
     return
   }
 
-  const puzzle = puzzles[0]
-
   res.status(200).json({
-    data: puzzle,
+    data: puzzles,
     hasError: false,
   })
 }
