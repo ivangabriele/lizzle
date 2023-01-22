@@ -12,6 +12,7 @@ import type { Promisable } from 'type-fest'
 const DEFAULT_CONFIG: Config & {
   fen: FEN
 } = {
+  coordinates: false,
   fen: 'k7/7R/6Q1/8/8/8/8/7K w - - 0 1',
   highlight: {
     check: true,
