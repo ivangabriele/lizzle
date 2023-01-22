@@ -1,7 +1,9 @@
 import { XButton } from '@frontend/atoms/XButton'
 import { LocalStorageNamespace, LocalStoragePuzzleKey } from '@frontend/constants'
 import { useDebouncedValue } from '@frontend/hooks/useDebouncedValue'
+import { usePrevious } from '@frontend/hooks/usePrevious'
 import { LocalStorage } from '@frontend/libs/LocalStorage'
+import { LastPuzzle } from '@frontend/organisms/LastPuzzle'
 import { LevelControl } from '@frontend/organisms/LevelControl'
 import { PuzzleInfo } from '@frontend/organisms/PuzzleInfo'
 import { Toolbar } from '@frontend/organisms/Toolbar'
@@ -18,7 +20,8 @@ import type { Puzzle } from '@prisma/generations'
 import type { FEN } from 'chessground/types'
 
 const ANALYSIS_BASE_URL = 'https://lichess.org/analysis'
-const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+// const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w'
 const PRELOADED_PUZZLES_LENGTH = 12
 
 const DynamicBoard: ComponentType<BoardProps> = dynamic(
@@ -29,7 +32,6 @@ const DynamicBoard: ComponentType<BoardProps> = dynamic(
 )
 
 export default function HomePage() {
-  const analysisFen = useRef<FEN>(DEFAULT_FEN)
   const isAnalysisFenLoaded = useRef(false)
   const localStorage = useRef(new LocalStorage())
   const puzzles = useRef<Puzzle[]>([])
@@ -40,24 +42,22 @@ export default function HomePage() {
   const [isReady, setIsReady] = useState(false)
   const [levelRange, setLevelRange] = useState<[number, number]>([1000, 1500])
   const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle | undefined>()
+  const [currentPuzzleAnalysisFen, setCurrentPuzzleAnalysisFen] = useState<FEN>(DEFAULT_FEN)
 
   const boardKey = useMemo(() => (currentPuzzle ? currentPuzzle.fen : 'undefined'), [currentPuzzle])
   const debouncedLevelRange = useDebouncedValue(levelRange, 500)
+  const lastPuzzleAnalysisFen = usePrevious(currentPuzzleAnalysisFen)
 
-  const closeAnalysis = useCallback(async () => {
+  const closeAnalysis = useCallback(() => {
     setIsAnalysisOpen(false)
   }, [])
 
-  const openAnalysis = useCallback(async () => {
-    if (!currentPuzzle) {
-      return
-    }
-
-    const nextAnalysisUrl = `${ANALYSIS_BASE_URL}/standard/${analysisFen.current.replace(/ /g, '_')}`
+  const openAnalysis = useCallback((fen: FEN) => {
+    const nextAnalysisUrl = `${ANALYSIS_BASE_URL}/standard/${fen.replace(/ /g, '_')}`
 
     setAnalysisUrl(nextAnalysisUrl)
     setIsAnalysisOpen(true)
-  }, [currentPuzzle])
+  }, [])
 
   const loadRandomPuzzles = useCallback(
     async (isPreload: boolean = false) => {
@@ -122,7 +122,6 @@ export default function HomePage() {
 
     puzzles.current = puzzles.current.slice(0, puzzles.current.length - 1)
 
-    analysisFen.current = DEFAULT_FEN
     isAnalysisFenLoaded.current = false
 
     if (puzzles.current.length < 10) {
@@ -137,8 +136,9 @@ export default function HomePage() {
       return
     }
 
-    analysisFen.current = nextFen
     isAnalysisFenLoaded.current = true
+
+    setCurrentPuzzleAnalysisFen(nextFen)
   }, [])
 
   const updateLevelRange = useCallback((nextLevelRange: [number, number]) => {
@@ -179,22 +179,28 @@ export default function HomePage() {
     <Background>
       <Box>
         <Main>
-          {(isLoading || !currentPuzzle) && <ClockLoader size={80} />}
+          <Board>
+            {(isLoading || !currentPuzzle) && <ClockLoader size={80} />}
 
-          {!isLoading && currentPuzzle !== undefined && (
-            <DynamicBoard
-              key={boardKey}
-              fen={currentPuzzle.fen}
-              isPuzzle
-              moves={currentPuzzle.moves}
-              onChange={updateAnalysisFen}
-              onEnd={loadNextPuzzle}
-            />
-          )}
+            {!isLoading && currentPuzzle !== undefined && (
+              <DynamicBoard
+                key={boardKey}
+                fen={currentPuzzle.fen}
+                isPuzzle
+                moves={currentPuzzle.moves}
+                onChange={updateAnalysisFen}
+                onEnd={loadNextPuzzle}
+              />
+            )}
+          </Board>
+
+          <Sidebar>
+            {lastPuzzleAnalysisFen !== undefined && <LastPuzzle fen={lastPuzzleAnalysisFen} onClick={openAnalysis} />}
+          </Sidebar>
         </Main>
 
         <Footer>
-          {isReady && <Toolbar onAnalysisRequest={openAnalysis} />}
+          {isReady && <Toolbar onAnalysisRequest={() => openAnalysis(currentPuzzleAnalysisFen)} />}
           {currentPuzzle !== undefined && <PuzzleInfo puzzle={currentPuzzle} />}
           {isReady && <LevelControl defaultValue={debouncedLevelRange} onChange={updateLevelRange} />}
         </Footer>
@@ -236,10 +242,22 @@ const Box = styled.div`
 `
 
 const Main = styled.div`
+  display: flex;
+  flex-grow: 1;
+  padding: 2rem;
+`
+
+const Board = styled.div`
   align-items: center;
   display: flex;
   flex-grow: 1;
   justify-content: center;
+`
+
+const Sidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 10%;
 `
 
 const Footer = styled.div`
