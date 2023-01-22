@@ -54,7 +54,7 @@ export function Board({ fen, isPuzzle = false, moves, onChange, onEnd }: BoardPr
       return
     }
 
-    audioPlayer.play(AudioPlayerCustomSound.CONFIRMATION)
+    audioPlayer.play(AudioPlayerCustomSound.FAILURE)
 
     chessgroundRef.current.set({
       fen: gameRef.current.fen,
@@ -109,7 +109,7 @@ export function Board({ fen, isPuzzle = false, moves, onChange, onEnd }: BoardPr
 
       if (moveIndexRef.current === movesAsPairs.length) {
         if (isPuzzle) {
-          audioPlayer.play(AudioPlayerCustomSound.CONFIRMATION, 0.1)
+          audioPlayer.play(AudioPlayerCustomSound.SUCCESS, 0.1)
         } else {
           audioPlayer.play(gameRef.current.state)
         }

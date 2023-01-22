@@ -162,7 +162,5 @@ dist
 # Custom
 
 /.yarn/sdks
+/tmp
 /prisma/generations
-
-/*.bz2
-/*.csv

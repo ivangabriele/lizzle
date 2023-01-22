@@ -3,8 +3,8 @@ import PQueue from 'p-queue'
 import { GameState } from './Game'
 
 export enum AudioPlayerCustomSound {
-  CONFIRMATION = 'CONFIRMATION',
   FAILURE = 'FAILURE',
+  SUCCESS = 'SUCCESS',
 }
 
 export class AudioPlayer {
@@ -19,8 +19,8 @@ export class AudioPlayer {
     [GameState.DRAW]: new Audio('/sounds/draw.ogg'),
     [GameState.MOVE]: new Audio('/sounds/move.ogg'),
     [GameState.VICTORY]: new Audio('/sounds/victory.ogg'),
-    [AudioPlayerCustomSound.CONFIRMATION]: new Audio('/sounds/confirmation.wav'),
     [AudioPlayerCustomSound.FAILURE]: new Audio('/sounds/failure.ogg'),
+    [AudioPlayerCustomSound.SUCCESS]: new Audio('/sounds/success.wav'),
   }
 
   async play(soundKey: GameState | AudioPlayerCustomSound, volumeRatio: number = 1) {
