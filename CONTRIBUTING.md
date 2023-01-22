@@ -11,9 +11,8 @@
 git clone https://github.com/ivangabriele/lizzle.git
 cd lizzle
 yarn
+yarn dev:docker
 yarn dev:setup
 yarn dev:setup:vscode # Visual Studio Code
-yarn dev:docker
-yarn db:migrate
 yarn data:sync # There are more than 2M puzzles so that's a long operation' (~1h)
 ```

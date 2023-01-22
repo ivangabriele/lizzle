@@ -3,11 +3,14 @@
 # Exit when any command fails:
 set -e
 
-# Load .env file
-if [ -f "./.env" ]; then
-  export $(egrep -v '^#' ./.env | xargs) > /dev/null
+if [ "${NODE_ENV}" == "production" ]; then
+  echo "Removing .env file..."
+  rm -f ./.env
 fi
 
+echo "Generating Prisma runtime files..."
+yarn db:generate
+echo "Running database migration..."
 yarn db:migrate
 # yarn data:sync
 yarn next start

@@ -19,3 +19,5 @@ fi
 
 echo "Generating Prisma runtime files..."
 yarn db:generate
+echo "Running database migration..."
+yarn db:migrate
