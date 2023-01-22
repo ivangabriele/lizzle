@@ -1,10 +1,10 @@
 services:
   db:
-    container_name: lichess_trainer_db
+    container_name: lizzle_db
     image: postgres:14
     restart: always
     environment:
-      POSTGRES_DB: lichess_trainer
+      POSTGRES_DB: lizzle_db
       POSTGRES_USER: dev_db_user
       POSTGRES_PASSWORD: dev_db_password
     volumes:

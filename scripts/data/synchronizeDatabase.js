@@ -63,7 +63,7 @@ async function processJsonPuzzle(jsonPuzzle) {
   })
 }
 
-const fileCsvPath = getAbsolutePath(import.meta.url, `../../${LICHESS_PUZZLES_DATA_FILENAME}.csv`)
+const fileCsvPath = getAbsolutePath(import.meta.url, `../../tmp/${LICHESS_PUZZLES_DATA_FILENAME}.csv`)
 const config = {
   // https://database.lichess.org/#puzzles
   headers: [

@@ -20,8 +20,6 @@ import type { Puzzle } from '@prisma/generations'
 import type { FEN } from 'chessground/types'
 
 const ANALYSIS_BASE_URL = 'https://lichess.org/analysis'
-// const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w'
 const PRELOADED_PUZZLES_LENGTH = 12
 
 const DynamicBoard: ComponentType<BoardProps> = dynamic(
@@ -42,7 +40,7 @@ export default function HomePage() {
   const [isReady, setIsReady] = useState(false)
   const [levelRange, setLevelRange] = useState<[number, number] | undefined>(undefined)
   const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle | undefined>()
-  const [currentPuzzleAnalysisFen, setCurrentPuzzleAnalysisFen] = useState<FEN>(DEFAULT_FEN)
+  const [currentPuzzleAnalysisFen, setCurrentPuzzleAnalysisFen] = useState<FEN | undefined>(undefined)
 
   const debouncedLevelRange = useDebouncedValue(levelRange, 500)
   const lastPuzzleAnalysisFen = usePrevious(currentPuzzleAnalysisFen)
@@ -202,7 +200,7 @@ export default function HomePage() {
         </Main>
 
         <Footer>
-          {isReady && <Toolbar onAnalysisRequest={() => openAnalysis(currentPuzzleAnalysisFen)} />}
+          {currentPuzzleAnalysisFen && <Toolbar onAnalysisRequest={() => openAnalysis(currentPuzzleAnalysisFen)} />}
           {currentPuzzle !== undefined && <PuzzleInfo puzzle={currentPuzzle} />}
           {debouncedLevelRange && <LevelControl defaultValue={debouncedLevelRange} onChange={updateLevelRange} />}
         </Footer>

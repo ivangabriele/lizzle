@@ -9,5 +9,5 @@ if [ -f "./.env" ]; then
 fi
 
 yarn db:migrate
-yarn data:synchronize
+yarn data:sync
 yarn next start

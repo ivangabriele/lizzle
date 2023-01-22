@@ -1,6 +1,6 @@
 {
-  "name": "lichess-trainer",
-  "description": "Train you chess puzzles.",
+  "name": "lizzle",
+  "description": "Train your chess puzzles using Lichess database.",
   "version": "0.0.0",
   "license": "AGPL-3.0",
   "private": true,
@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "next build",
-    "data:synchronize": "sh ./scripts/data/synchronize.sh",
+    "data:sync": "sh ./scripts/data/synchronize.sh",
     "db:generate": "yarn pnpify prisma generate",
     "db:migrate": "prisma migrate deploy && yarn db:generate",
     "dev": "next dev",

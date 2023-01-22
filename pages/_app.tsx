@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { createGlobalStyle } from 'styled-components'
 
 import type { AppProps } from 'next/app'
@@ -47,6 +48,11 @@ const GlobalStyle: any = createGlobalStyle`
 export default function MetiersNumeriquesApp({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Head>
+        <title>Lizzle</title>
+        <meta content="Train your chess puzzles using Lichess database." name="description" />
+      </Head>
+
       <GlobalStyle />
 
       <Component {...pageProps} />
