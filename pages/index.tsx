@@ -20,6 +20,7 @@ import type { Puzzle } from '@prisma/generations'
 import type { FEN } from 'chessground/types'
 
 const ANALYSIS_BASE_URL = 'https://lichess.org/analysis'
+const DEFAULT_LEVEL_RANGE: [number, number] = [1000, 1500]
 const PRELOADED_PUZZLES_LENGTH = 12
 
 const DynamicBoard: ComponentType<BoardProps> = dynamic(
@@ -37,7 +38,6 @@ export default function HomePage() {
   const [analysisUrl, setAnalysisUrl] = useState<string>(ANALYSIS_BASE_URL)
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [isReady, setIsReady] = useState(false)
   const [levelRange, setLevelRange] = useState<[number, number] | undefined>(undefined)
   const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle | undefined>()
   const [currentPuzzleAnalysisFen, setCurrentPuzzleAnalysisFen] = useState<FEN | undefined>(undefined)
@@ -153,7 +153,7 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    if (!isReady) {
+    if (!debouncedLevelRange) {
       return
     }
 
@@ -162,7 +162,7 @@ export default function HomePage() {
 
       loadNextPuzzle()
     })()
-  }, [debouncedLevelRange, isReady, loadNextPuzzle, loadRandomPuzzles])
+  }, [debouncedLevelRange, loadNextPuzzle, loadRandomPuzzles])
 
   useEffect(() => {
     const cachedLevelRange = localStorage.current.get<LocalStoragePuzzleValue>(
@@ -171,9 +171,11 @@ export default function HomePage() {
     )
     if (cachedLevelRange) {
       setLevelRange(cachedLevelRange)
-    }
+    } else {
+      localStorage.current.set(LocalStorageNamespace.PUZZLE, LocalStoragePuzzleKey.LEVEL_RANGE, DEFAULT_LEVEL_RANGE)
 
-    setIsReady(true)
+      setLevelRange(DEFAULT_LEVEL_RANGE)
+    }
   }, [])
 
   return (
