@@ -8,7 +8,7 @@ if [ -f "./.env" ]; then
   export $(egrep -v '^#' ./.env | xargs) > /dev/null
 fi
 
-if [ "${NODE_ENV}" == "production" ]; then
+if [ "${NODE_ENV}" = "production" ]; then
   echo "Removing .env file..."
   rm -f ./.env
 fi

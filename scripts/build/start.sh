@@ -3,7 +3,7 @@
 # Exit when any command fails:
 set -e
 
-if [ "${NODE_ENV}" == "production" ]; then
+if [ "${NODE_ENV}" = "production" ]; then
   echo "Removing .env file..."
   rm -f ./.env
 fi
