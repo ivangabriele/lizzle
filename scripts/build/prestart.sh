@@ -6,4 +6,4 @@ set -e
 echo "Running database migration..."
 yarn db:migrate
 echo "Synchronizing data..."
-# yarn data:sync
+yarn data:sync
