@@ -14,5 +14,5 @@ yarn
 yarn dev:docker
 yarn dev:setup
 yarn dev:setup:vscode # Visual Studio Code
-yarn data:sync # There are more than 2M puzzles so that's a long operation' (~1h)
+yarn data:sync # There are more than 3M puzzles so that's a long operation' (~1h)
 ```

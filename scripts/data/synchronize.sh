@@ -28,4 +28,4 @@ if [ ! -f $FILE_CSV_PATH ]; then
 fi
 
 node -r dotenv/config ./scripts/data/synchronizeDatabase.js
-rm -f ./tmp
+rm -Rf ./tmp
