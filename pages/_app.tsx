@@ -37,6 +37,7 @@ const GlobalStyle: any = createGlobalStyle`
   #__next {
     background-color: #a18890;
     background-image: url('/images/background.jpg');
+    background-position: center;
     background-size: cover;
     color: #eeeeee;
     display: flex;
