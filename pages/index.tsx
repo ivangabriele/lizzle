@@ -182,6 +182,8 @@ export default function HomePage() {
     <Background>
       <Box>
         <Main>
+          <Sidebar />
+
           <Board>
             {(isLoading || !currentPuzzle) && <ClockLoader size={80} />}
 
@@ -254,10 +256,12 @@ const Board = styled.div`
   display: flex;
   flex-grow: 1;
   justify-content: center;
+  opacity: 0.8;
 `
 
 const Sidebar = styled.div`
   display: flex;
+  height: 100%;
   flex-direction: column;
   width: 10%;
 `
