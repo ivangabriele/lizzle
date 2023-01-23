@@ -17,3 +17,5 @@ echo "Generating Prisma runtime files..."
 yarn db:generate
 echo "Building Next.js app..."
 yarn next build
+echo "Running database migration..."
+yarn db:migrate

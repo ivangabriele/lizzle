@@ -8,9 +8,7 @@ if [ "${NODE_ENV}" = "production" ]; then
   rm -f ./.env
 fi
 
-echo "Generating Prisma runtime files..."
-yarn db:generate
-echo "Running database migration..."
-yarn db:migrate
+# echo "Running database migration..."
+# yarn db:migrate
 # yarn data:sync
 yarn next start
