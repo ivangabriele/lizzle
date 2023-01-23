@@ -31,9 +31,11 @@ const DynamicBoard: ComponentType<BoardProps> = dynamic(
 )
 
 export default function HomePage() {
-  const isAnalysisFenLoaded = useRef(false)
-  const localStorage = useRef(new LocalStorage())
-  const puzzles = useRef<Puzzle[]>([])
+  // eslint-disable-next-line no-null/no-null
+  const analysisBoxElementRef = useRef<HTMLDivElement | null>(null)
+  const isAnalysisFenLoadedRef = useRef(false)
+  const localStorageRef = useRef(new LocalStorage())
+  const puzzlesRef = useRef<Puzzle[]>([])
 
   const [analysisUrl, setAnalysisUrl] = useState<string>(ANALYSIS_BASE_URL)
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false)
@@ -94,9 +96,9 @@ export default function HomePage() {
         }
 
         if (isPreload) {
-          puzzles.current = [...puzzles.current, ...responseData.data]
+          puzzlesRef.current = [...puzzlesRef.current, ...responseData.data]
         } else {
-          puzzles.current = responseData.data
+          puzzlesRef.current = responseData.data
         }
       } catch (err) {
         if (err instanceof HTTPError) {
@@ -114,18 +116,18 @@ export default function HomePage() {
   )
 
   const loadNextPuzzle = useCallback(() => {
-    const nextPuzzle = last(puzzles.current)
+    const nextPuzzle = last(puzzlesRef.current)
     if (!nextPuzzle) {
       console.error('No puzzle anymore. This should never happen.')
 
       return
     }
 
-    puzzles.current = puzzles.current.slice(0, puzzles.current.length - 1)
+    puzzlesRef.current = puzzlesRef.current.slice(0, puzzlesRef.current.length - 1)
 
-    isAnalysisFenLoaded.current = false
+    isAnalysisFenLoadedRef.current = false
 
-    if (puzzles.current.length < 10) {
+    if (puzzlesRef.current.length < 10) {
       loadRandomPuzzles(true)
     }
 
@@ -133,11 +135,11 @@ export default function HomePage() {
   }, [loadRandomPuzzles])
 
   const updateCurrentPuzzleAnalysisFen = useCallback((nextFen: FEN) => {
-    if (isAnalysisFenLoaded.current) {
+    if (isAnalysisFenLoadedRef.current) {
       return
     }
 
-    isAnalysisFenLoaded.current = true
+    isAnalysisFenLoadedRef.current = true
 
     setCurrentPuzzleAnalysisFen(nextFen)
   }, [])
@@ -145,7 +147,7 @@ export default function HomePage() {
   const updateLevelRange = useCallback((nextLevelRange: [number, number]) => {
     setLevelRange(nextLevelRange)
 
-    localStorage.current.set<LocalStoragePuzzleValue>(
+    localStorageRef.current.set<LocalStoragePuzzleValue>(
       LocalStorageNamespace.PUZZLE,
       LocalStoragePuzzleKey.LEVEL_RANGE,
       nextLevelRange,
@@ -165,17 +167,37 @@ export default function HomePage() {
   }, [debouncedLevelRange, loadNextPuzzle, loadRandomPuzzles])
 
   useEffect(() => {
-    const cachedLevelRange = localStorage.current.get<LocalStoragePuzzleValue>(
+    const cachedLevelRange = localStorageRef.current.get<LocalStoragePuzzleValue>(
       LocalStorageNamespace.PUZZLE,
       LocalStoragePuzzleKey.LEVEL_RANGE,
     )
     if (cachedLevelRange) {
       setLevelRange(cachedLevelRange)
     } else {
-      localStorage.current.set(LocalStorageNamespace.PUZZLE, LocalStoragePuzzleKey.LEVEL_RANGE, DEFAULT_LEVEL_RANGE)
+      localStorageRef.current.set(LocalStorageNamespace.PUZZLE, LocalStoragePuzzleKey.LEVEL_RANGE, DEFAULT_LEVEL_RANGE)
 
       setLevelRange(DEFAULT_LEVEL_RANGE)
     }
+  }, [])
+
+  useEffect(() => {
+    if (!analysisBoxElementRef.current || !window.visualViewport) {
+      return
+    }
+
+    const analysisFrameElementHeight = Math.round(window.visualViewport.height * 0.8)
+    const analysisFrameElementIdealWidth = Math.round(analysisFrameElementHeight * 1.4)
+    const analysisFrameElementScreenWidth = Math.round(window.visualViewport.width * 0.8)
+    const analysisFrameElementWidth =
+      analysisFrameElementIdealWidth > analysisFrameElementScreenWidth
+        ? analysisFrameElementScreenWidth
+        : analysisFrameElementIdealWidth
+    const analysisBoxElementMargin = [
+      `${(window.visualViewport.height - analysisFrameElementHeight) / 2}px`,
+      `${(window.visualViewport.width - analysisFrameElementWidth) / 2}px`,
+    ].join(' ')
+
+    analysisBoxElementRef.current.style.padding = analysisBoxElementMargin
   }, [])
 
   return (
@@ -209,12 +231,10 @@ export default function HomePage() {
           {debouncedLevelRange && <LevelControl defaultValue={debouncedLevelRange} onChange={updateLevelRange} />}
         </Footer>
 
-        {isAnalysisOpen && (
-          <AnalysisBox>
-            <AnalysisCloseButton onClick={closeAnalysis} />
-            <AnalysisFrame src={analysisUrl} />
-          </AnalysisBox>
-        )}
+        <AnalysisBox ref={analysisBoxElementRef} isVisible={isAnalysisOpen} onClick={closeAnalysis}>
+          <AnalysisCloseButton onClick={closeAnalysis} />
+          <AnalysisFrame src={analysisUrl} />
+        </AnalysisBox>
       </Box>
     </Background>
   )
@@ -272,13 +292,14 @@ const Footer = styled.div`
   padding: 0 2rem 2rem;
 `
 
-const AnalysisBox = styled.div`
+const AnalysisBox = styled.div<{
+  isVisible: boolean
+}>`
   background-color: rgba(0, 0, 0, 0.75);
+  display: ${p => (p.isVisible ? 'block' : 'none')};
   height: 100%;
-  /* left: 10%; */
-  padding: 10%;
+  /* padding: 10%; */
   position: absolute;
-  /* top: 10%; */
   width: 100%;
   z-index: 100;
 `
