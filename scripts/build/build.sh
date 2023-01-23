@@ -8,14 +8,7 @@ if [ -f "./.env" ]; then
   export $(egrep -v '^#' ./.env | xargs) > /dev/null
 fi
 
-if [ "${NODE_ENV}" = "production" ]; then
-  echo "Removing .env file..."
-  rm -f ./.env
-fi
-
 echo "Generating Prisma runtime files..."
 yarn db:generate
-echo "Building Next.js app..."
+echo "Building Next.js application..."
 yarn next build
-echo "Running database migration..."
-yarn db:migrate
