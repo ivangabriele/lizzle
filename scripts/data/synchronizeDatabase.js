@@ -1,7 +1,7 @@
+import { B } from 'bhala'
 import csvtojson from 'csvtojson'
 import { getAbsolutePath } from 'esm-path'
 import { createReadStream } from 'fs'
-import ora from 'ora'
 
 // eslint-disable-next-line import/no-relative-packages
 import { PrismaClient } from '../../prisma/generations'
@@ -20,9 +20,8 @@ import { PrismaClient } from '../../prisma/generations'
  * @property {string} Themes
  */
 
-const { LICHESS_PUZZLES_DATA_FILENAME } = process.env
+const LICHESS_PUZZLES_DATA_FILENAME = 'lichess_db_puzzle'
 
-const spinner = ora()
 const prisma = new PrismaClient()
 
 /**
@@ -50,13 +49,12 @@ async function processJsonPuzzle(jsonPuzzle) {
     },
   })
   if (maybePuzzleCount === 1) {
-    spinner.warn(`Puzzle ${jsonPuzzle.PuzzleId} is already processed.`)
-    spinner.start()
+    B.warn(`Puzzle ${jsonPuzzle.PuzzleId} is already processed.`)
 
     return
   }
 
-  spinner.text = `Puzzle ${jsonPuzzle.PuzzleId} is processing...`
+  B.info(`Puzzle ${jsonPuzzle.PuzzleId} is processing...`)
   const puzzle = convertJsonPuzzleToPuzzle(jsonPuzzle)
   await prisma.puzzle.create({
     data: puzzle,
@@ -87,10 +85,10 @@ await csvtojson(config)
   .subscribe(
     processJsonPuzzle,
     err => {
-      spinner.fail(err.message)
+      B.error(err.message)
       console.error(err)
     },
     () => {
-      spinner.succeed('Done.')
+      B.success('Done.')
     },
   )

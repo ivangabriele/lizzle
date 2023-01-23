@@ -3,6 +3,13 @@
 # Exit when any command fails:
 set -e
 
+if [ -z "$CI" ] && [ "${NODE_ENV}" != "production" ]; then
+  # Load .env file
+  if [ -f "./.env" ]; then
+    export $(egrep -v '^#' ./.env | xargs) > /dev/null
+  fi
+fi
+
 readonly FILE_BZ2_PATH="./tmp/lichess_db_puzzle.csv.bz2"
 readonly FILE_CSV_PATH="./tmp/lichess_db_puzzle.csv"
 # https://database.lichess.org
