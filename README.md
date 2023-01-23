@@ -1,6 +1,6 @@
-# Lizzle
+# [lizzle.org](https://lizzle.org)
 
-> Train your chess puzzles using [Lichess database](https://database.lichess.org).
+Train your chess puzzles using [Lichess database](https://database.lichess.org).
 
 ## Contributing
 
