@@ -7,8 +7,7 @@
   "type": "module",
   "engines": {
     "node": ">=18",
-    "npm": "9",
-    "yarn": "3"
+    "npm": "9"
   },
   "scripts": {
     "build": "sh ./scripts/build/build.sh",
