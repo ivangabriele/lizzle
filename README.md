@@ -15,7 +15,7 @@ Train your chess puzzles using [Lichess database](https://database.lichess.org).
   - [What's the point of lizzle.org? Can't I already do that on Lichess?](#whats-the-point-of-lizzleorg-cant-i-already-do-that-on-lichess)
   - [Why do I have to pay for lizzle.org while Lichess is entirely free?](#why-do-i-have-to-pay-for-lizzleorg-while-lichess-is-entirely-free)
   - [I don't want to pay for lizzle.org, how can I get it for free?](#i-dont-want-to-pay-for-lizzleorg-how-can-i-get-it-for-free)
-  - [Can I reuse this application for my own?](#can-i-reuse-this-application-for-my-own)
+  - [Can I reuse this codebase for my own application?](#can-i-reuse-this-codebase-for-my-own-application)
 - [License](#license)
 
 ## Features
@@ -62,9 +62,9 @@ cloud or server.
 
 But deploying it to a PaaS or a dedicated VPS will cost you more than a single [lizzle.org](https://lizzle.org) subscription. The initial database alone is around ~1GB.
 
-### Can I reuse this application for my own?
+### Can I reuse this codebase for my own application?
 
-You can use this codebase for whatever you wish to produce, including commercial applications, **BUT** you need to make
+You can use this codebase for whatever you wish to produce, including commercial applications, **BUT** you **MUST** make
 your entire codebase public.
 
 I invite you to read [Why the Affero GPL](https://www.gnu.org/licenses/why-affero-gpl.html) and [Open Source Software
