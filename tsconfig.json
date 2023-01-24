@@ -1,5 +1,5 @@
 {
-  "extends": "@ivangabriele/tsconfig-next",
+  "extends": "@ivangabriele/tsconfig-next/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
     "baseUrl": ".",

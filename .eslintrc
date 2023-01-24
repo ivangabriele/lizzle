@@ -3,7 +3,7 @@
   "parserOptions": {
     "ecmaVersion": 2022,
     "extraFileExtensions": [".cjs"],
-    "project": "./tsconfig.dev.json"
+    "project": "./tsconfig.json"
   },
   "ignorePatterns": [".next/*", ".yarn/*", "prisma/generations/*", "next-env.d.ts"],
   "rules": {

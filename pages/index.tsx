@@ -1,3 +1,5 @@
+import { IRON_SESSION_OPTIONS } from '@backend/constants'
+import { prisma } from '@backend/libs/prisma'
 import { XButton } from '@frontend/atoms/XButton'
 import { LocalStorageNamespace, LocalStoragePuzzleKey } from '@frontend/constants'
 import { useDebouncedValue } from '@frontend/hooks/useDebouncedValue'
@@ -7,17 +9,23 @@ import { LastPuzzle } from '@frontend/organisms/LastPuzzle'
 import { LevelControl } from '@frontend/organisms/LevelControl'
 import { PuzzleInfo } from '@frontend/organisms/PuzzleInfo'
 import { Toolbar } from '@frontend/organisms/Toolbar'
-import ky, { HTTPError } from 'ky'
+import { UserOrigin } from '@prisma/generations'
+import { withIronSessionSsr } from 'iron-session/next'
+import ky, { HTTPError } from 'ky-universal'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { last } from 'ramda'
-import { ComponentType, useCallback, useEffect, useRef, useState } from 'react'
+import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ClockLoader } from 'react-spinners'
 import styled from 'styled-components'
 
+import type { LichessApi } from '@backend/types/LichessApi'
+import type { Session } from '@backend/types/Session'
 import type { BoardProps } from '@frontend/organisms/Board'
 import type { LocalStoragePuzzleValue } from '@frontend/types'
-import type { Puzzle } from '@prisma/generations'
+import type { Prisma, Puzzle } from '@prisma/generations'
 import type { FEN } from 'chessground/types'
+// import type { NextPageContext } from 'next'
 
 const ANALYSIS_BASE_URL = 'https://lichess.org/analysis'
 const DEFAULT_LEVEL_RANGE: [number, number] = [1000, 1500]
@@ -30,7 +38,10 @@ const DynamicBoard: ComponentType<BoardProps> = dynamic(
   },
 )
 
-export default function HomePage() {
+export type HomePageProps = {
+  me: Session.Data['user']
+}
+export default function HomePage({ me }: HomePageProps) {
   // eslint-disable-next-line no-null/no-null
   const analysisBoxElementRef = useRef<HTMLDivElement | null>(null)
   const isAnalysisFenLoadedRef = useRef(false)
@@ -45,7 +56,10 @@ export default function HomePage() {
   const [currentPuzzleAnalysisFen, setCurrentPuzzleAnalysisFen] = useState<FEN | undefined>(undefined)
 
   const debouncedLevelRange = useDebouncedValue(levelRange, 500)
+  const isAuthenticated = useMemo(() => Boolean(me), [me])
   const lastPuzzleAnalysisFen = usePrevious(currentPuzzleAnalysisFen)
+
+  const router = useRouter()
 
   const closeAnalysis = useCallback(() => {
     setIsAnalysisOpen(false)
@@ -133,6 +147,10 @@ export default function HomePage() {
 
     setCurrentPuzzle(nextPuzzle)
   }, [loadRandomPuzzles])
+
+  const redirectToLogin = useCallback(() => {
+    router.push('/api/auth/login')
+  }, [router])
 
   const updateCurrentPuzzleAnalysisFen = useCallback((nextFen: FEN) => {
     if (isAnalysisFenLoadedRef.current) {
@@ -226,7 +244,13 @@ export default function HomePage() {
         </Main>
 
         <Footer>
-          {currentPuzzleAnalysisFen && <Toolbar onAnalysisRequest={() => openAnalysis(currentPuzzleAnalysisFen)} />}
+          {currentPuzzleAnalysisFen && (
+            <Toolbar
+              isAuthenticated={isAuthenticated}
+              onAnalysisRequest={() => openAnalysis(currentPuzzleAnalysisFen)}
+              onLoginRequest={redirectToLogin}
+            />
+          )}
           {currentPuzzle !== undefined && <PuzzleInfo puzzle={currentPuzzle} />}
           {debouncedLevelRange && <LevelControl defaultValue={debouncedLevelRange} onChange={updateLevelRange} />}
         </Footer>
@@ -314,3 +338,123 @@ const AnalysisCloseButton = styled(XButton)`
   right: 5%;
   top: 5%;
 `
+
+export const getServerSideProps = withIronSessionSsr(async ({ query, req }): Promise<any> => {
+  const defaultResponse = {
+    props: {
+      // eslint-disable-next-line no-null/no-null
+      me: (req.session as Session.Data).user || null,
+    },
+  }
+
+  const { code } = query
+  if (!req || !code || Array.isArray(code)) {
+    return defaultResponse
+  }
+
+  const oauthCode = (req.session as Session.Data).oauth?.codeVerifier
+  if (!oauthCode) {
+    return defaultResponse
+  }
+
+  try {
+    req.session.destroy()
+
+    const bodyAsRecord = {
+      client_id: String(process.env.LICHESS_API_CLIENT_ID),
+      code,
+      code_verifier: oauthCode,
+      grant_type: 'authorization_code',
+      redirect_uri: `${process.env.BASE_URL}/`,
+    }
+    const body = JSON.stringify(bodyAsRecord)
+    const lichessApiTokenData = await ky
+      .post('https://lichess.org/api/token', {
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .json<LichessApi.Token>()
+
+    const { access_token: lichessAccessToken } = lichessApiTokenData
+
+    const lichessApiAccountEmailData = await ky
+      .get('https://lichess.org/api/account/email', {
+        headers: {
+          Authorization: `Bearer ${lichessAccessToken}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .json<LichessApi.AccountEmail>()
+
+    let me = await prisma.user.findFirst({
+      select: {
+        id: true,
+        isAdmin: true,
+        username: true,
+      },
+      where: {
+        email: lichessApiAccountEmailData.email,
+      },
+    })
+    if (!me) {
+      const lichessApiAccountData = await ky
+        .get('https://lichess.org/api/account', {
+          headers: {
+            Authorization: `Bearer ${lichessAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .json<LichessApi.Account>()
+
+      const usersCount = await prisma.user.count()
+      const isAdmin = usersCount === 0
+
+      const newUserData: Prisma.UserCreateInput = {
+        email: lichessApiAccountEmailData.email,
+        isAdmin,
+        lichessAccessToken,
+        lichessId: lichessApiAccountData.id,
+        origin: UserOrigin.LICHESS,
+        username: lichessApiAccountData.username,
+      }
+      me = await prisma.user.create({
+        data: newUserData,
+        select: {
+          id: true,
+          isAdmin: true,
+          username: true,
+        },
+      })
+    }
+    if (!me) {
+      // eslint-disable-next-line no-console
+      console.debug(`me is undefined. This should never happen.`)
+
+      return defaultResponse
+    }
+
+    ;(req.session as Session.Data) = {
+      user: me,
+    }
+
+    await req.session.save()
+
+    return {
+      props: {
+        me: (req.session as Session.Data).user,
+      },
+    }
+  } catch (err) {
+    if (err instanceof HTTPError) {
+      // eslint-disable-next-line no-console
+      console.debug(await err.response.json())
+    } else {
+      // eslint-disable-next-line no-console
+      console.debug(err)
+    }
+  }
+
+  return defaultResponse
+}, IRON_SESSION_OPTIONS)

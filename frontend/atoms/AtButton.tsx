@@ -10,6 +10,6 @@ export function AtButton(props: SymbolButtonProps) {
 
 const StyledSymbolButton = styled(SymbolButton)`
   font-size: 150%;
-  padding: 2px 10px 8px;
+  padding: 8px 10px 14px;
   width: 48px;
 `

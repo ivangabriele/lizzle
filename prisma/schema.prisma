@@ -15,27 +15,46 @@ enum PuzzleSource {
   LICHESS
 }
 
+enum UserOrigin {
+  LICHESS
+}
+
 // =========================================================
 // Models
 
-model Log {
-  id        String   @id @default(cuid())
-  wasSolved Boolean
-  createdAt DateTime @default(now())
+// model Log {
+//   id        String  @id @default(cuid())
+//   wasSolved Boolean
 
-  puzzle   Puzzle @relation(fields: [puzzleId], references: [id])
-  puzzleId String
-}
+//   createdAt DateTime @default(now())
+
+//   puzzle   Puzzle @relation(fields: [puzzleId], references: [id])
+//   puzzleId String
+// }
 
 model Puzzle {
-  id          String       @id @default(cuid())
-  fen         String
-  moves       String[]
-  originalId  String       @unique
-  rating      Int
-  source      PuzzleSource @default(LICHESS)
-  themes      String[]
-  processedAt DateTime     @default(now())
+  id         String       @id @default(cuid())
+  fen        String
+  moves      String[]
+  originalId String       @unique
+  rating     Int
+  source     PuzzleSource @default(LICHESS)
+  themes     String[]
 
-  logs Log[]
+  processedAt DateTime @default(now())
+
+  // logs Log[]
+}
+
+model User {
+  id                 String     @id @default(cuid())
+  email              String     @unique
+  isAdmin            Boolean    @default(false)
+  lichessAccessToken String?
+  lichessId          String?
+  origin             UserOrigin
+  username           String     @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

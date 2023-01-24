@@ -1,0 +1,5 @@
+{
+  "extends": ".",
+  "include": ["**/*.cjs", "**/*.js", "**/*.ts", "**/*.tsx", "next-env.d.ts"],
+  "exclude": [".next/*", ".yarn/*", "config/*", "node_modules/*", "prisma/generations/*"]
+}
