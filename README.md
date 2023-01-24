@@ -38,13 +38,10 @@ You can indeed train the exact same puzzles on [Lichess](https://lichess.org) (a
 are some missing features that at least myself really needed. Those are the ones listed in [Features](#features).
 
 If you want to become a beast at [Puzzle Storm](https://lichess.org/storm) or [Puzzle Racer](https://lichess.org/racer),
-or if you want to focus your training around a certain puzzle level, then [lizzle.org](https://lizzle.org) may help you
-quite a lot 😊.
+or if you want to focus your training around a certain puzzle level range, then [lizzle.org](https://lizzle.org) may
+help you quite a lot 😊.
 
 If you don't see the point of these features, then [lizzle.org](https://lizzle.org) is not for you 😌.
-
-But you won't, at least for now, get an amazing [Puzzle Dashboard](https://lichess.org/training/dashboard/90/dashboard)
-or many other useful puzzle features that [Lichess](https://lichess.org) offers.
 
 ### Why do I have to pay for [lizzle.org](https://lizzle.org) while [Lichess](https://lichess.org) is entirely free?
 
