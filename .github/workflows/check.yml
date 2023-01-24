@@ -16,7 +16,9 @@ jobs:
           cache: yarn
           node-version: 19
       - name: Install
-        run: yarn
+        run: |
+          yarn
+          yarn db:generate
       - name: Run
         run: yarn test:lint
 
@@ -32,7 +34,9 @@ jobs:
           cache: yarn
           node-version: 19
       - name: Install
-        run: yarn
+        run: |
+          yarn
+          yarn db:generate
       - name: Run
         run: yarn test:type
 
@@ -48,7 +52,9 @@ jobs:
   #         cache: yarn
   #         node-version: 19
   #     - name: Install
-  #       run: yarn
+  #       run: |
+  #         yarn
+  #         yarn db:generate
   #     - name: Run
   #       run: yarn test:unit --coverage
   #     - name: Cover
