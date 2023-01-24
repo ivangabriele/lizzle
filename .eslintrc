@@ -5,7 +5,7 @@
     "extraFileExtensions": [".cjs"],
     "project": "./tsconfig.dev.json"
   },
-  "ignorePatterns": ["next-env.d.ts"],
+  "ignorePatterns": [".next/*", ".yarn/*", "prisma/generations/*", "next-env.d.ts"],
   "rules": {
     "no-console": ["error", { "allow": ["error", "info"] }],
 

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
+// eslint-disable-next-line import/no-default-export
+export default {
   compiler: {
     styledComponents: true,
   },

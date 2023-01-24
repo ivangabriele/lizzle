@@ -1,5 +1,7 @@
 # ♟️ [lizzle.org](https://lizzle.org)
 
+[![img-license]][lnk-license] [![img-github]][lnk-github]
+
 Train your chess puzzles using [Lichess database](https://database.lichess.org).
 
 **Table of Contents**
@@ -80,3 +82,11 @@ This entire codebase is released under the [GNU Affero General Public License](.
 
 The [Lichess puzzle database](https://database.lichess.org/) is released under the
 [Creative Commons CC0 license](https://tldrlegal.com/license/creative-commons-cc0-1.0-universal).
+
+---
+
+[img-github]: https://img.shields.io/github/actions/workflow/status/ivangabriele/lizzle/check.yml?branch=main&style=flat-square
+[img-license]: https://img.shields.io/github/license/ivangabriele/lizzle?style=flat-square
+
+[lnk-github]: https://github.com/ivangabriele/lizzle/actions?query=branch%3Amain++
+[lnk-license]: https://github.com/ivangabriele/lizzle/blob/main/LICENSE
