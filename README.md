@@ -28,6 +28,7 @@ Train your chess puzzles using [Lichess database](https://database.lichess.org).
 
 ## Roadmap
 
+- 📱 Adapt UX * UI to small devices.
 - 🤖 Integrate Stockfish engine for the analysis (instead of using Lichess analysis via an iframe).
 
 ## Contributing
