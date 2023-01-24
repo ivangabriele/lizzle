@@ -62,7 +62,8 @@ But deploying it to a PaaS or a dedicated VPS will cost you more than a single [
 
 ### Can I reuse this application for my own?
 
-You can use this codebase for whatever you wish to produce, including commercial applications, **BUT** you need to share your entire codebase under the same [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html).
+You can use this codebase for whatever you wish to produce, including commercial applications, **BUT** you need to make
+your entire codebase public.
 
 I invite you to read [Why the Affero GPL](https://www.gnu.org/licenses/why-affero-gpl.html) and [Open Source Software
 Licenses 101: The AGPL License](https://fossa.com/blog/open-source-software-licenses-101-agpl-license/) but the gist is
