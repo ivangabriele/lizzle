@@ -21,7 +21,7 @@ Train your chess puzzles using [Lichess database](https://database.lichess.org).
 - ♟️ Focus your training within a specific puzzle level range.
 - 🦘 Jump to the next puzzle immediatly while still being able to open the last solved puzzle analysis
   _(very useful if you are like me and often don't get why an other oponent move was not better than the one played)_.
-- ⚡ Infinite Puzzle Storm mode with no failure allowed (= try until you succes) to track and improve your solving time.
+- ⚡ Infinite Puzzle Storm mode with no failure allowed (= try until you succeed) to improve your solving time.
 - 📉 Solving Time Progress Chart.
 
 ## Roadmap
