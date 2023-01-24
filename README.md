@@ -4,6 +4,8 @@
 
 Train your chess puzzles using [Lichess database](https://database.lichess.org).
 
+![Lizze.org Screenshot](./public/images/screenshot.png)
+
 **Table of Contents**
 
 - [Features](#features)
