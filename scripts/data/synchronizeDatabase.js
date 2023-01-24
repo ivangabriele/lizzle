@@ -22,7 +22,7 @@ import { PrismaClient } from '../../prisma/generations'
  * @property {string} Themes
  */
 
-const BATCH_LENGTH = 1024
+const BATCH_LENGTH = process.env.NODE_ENV !== 'production' ? 4096 : 1024
 const CACHE = {
   /** @type {import('../../prisma/generations').Prisma.PuzzleCreateInput[]} */
   puzzles: [],
@@ -108,14 +108,14 @@ async function run() {
         // eslint-disable-next-line no-console
         console.debug(err)
       },
-      () => {
+      async () => {
+        if (CACHE.puzzles.length > 0) {
+          await createPuzzles()
+        }
+
         B.success('Done.')
       },
     )
-
-  if (CACHE.puzzles.length > 0) {
-    await createPuzzles()
-  }
 }
 
 run()
