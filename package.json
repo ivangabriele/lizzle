@@ -52,7 +52,7 @@
     "ky": "0.33.2",
     "ky-universal": "0.11.0",
     "lodash.debounce": "4.0.8",
-    "next": "13.1.4",
+    "next": "14.2.24",
     "next-auth": "4.18.9",
     "numeral": "2.0.6",
     "p-queue": "7.3.0",
