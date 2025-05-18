@@ -100,7 +100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.8.7":
+"@babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.20.7, @babel/runtime@npm:^7.26.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.8.7":
   version: 7.27.1
   resolution: "@babel/runtime@npm:7.27.1"
   checksum: 10c0/530a7332f86ac5a7442250456823a930906911d895c0b743bf1852efc88a20a016ed4cd26d442d0ca40ae6d5448111e02a08dd638a4f1064b47d080e2875dc05
@@ -677,7 +677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@panva/hkdf@npm:^1.0.1":
+"@panva/hkdf@npm:^1.0.2":
   version: 1.2.1
   resolution: "@panva/hkdf@npm:1.2.1"
   checksum: 10c0/1fabdec9bd2c19b8e88a3fa6fd0c25e25823c5000d9efdf4b6dfe32e9f370f8b9603cf776d120d160bec15fba17e079974cc34f0f52cebb24602cd832dfde19c
@@ -4486,7 +4486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.15.9, jose@npm:^4.9.3":
+"jose@npm:^4.11.4, jose@npm:^4.15.9":
   version: 4.15.9
   resolution: "jose@npm:4.15.9"
   checksum: 10c0/4ed4ddf4a029db04bd167f2215f65d7245e4dc5f36d7ac3c0126aab38d66309a9e692f52df88975d99429e357e5fd8bab340ff20baab544d17684dd1d940a0f4
@@ -4801,7 +4801,7 @@ __metadata:
     lint-staged: "npm:13.1.0"
     lodash.debounce: "npm:4.0.8"
     next: "npm:13.1.4"
-    next-auth: "npm:4.18.9"
+    next-auth: "npm:4.24.5"
     numeral: "npm:2.0.6"
     p-queue: "npm:7.3.0"
     prettier: "npm:2.8.3"
@@ -5157,28 +5157,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-auth@npm:4.18.9":
-  version: 4.18.9
-  resolution: "next-auth@npm:4.18.9"
+"next-auth@npm:4.24.5":
+  version: 4.24.5
+  resolution: "next-auth@npm:4.24.5"
   dependencies:
-    "@babel/runtime": "npm:^7.16.3"
-    "@panva/hkdf": "npm:^1.0.1"
+    "@babel/runtime": "npm:^7.20.13"
+    "@panva/hkdf": "npm:^1.0.2"
     cookie: "npm:^0.5.0"
-    jose: "npm:^4.9.3"
+    jose: "npm:^4.11.4"
     oauth: "npm:^0.9.15"
-    openid-client: "npm:^5.1.0"
+    openid-client: "npm:^5.4.0"
     preact: "npm:^10.6.3"
     preact-render-to-string: "npm:^5.1.19"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    next: ^12.2.5 || ^13
+    next: ^12.2.5 || ^13 || ^14
     nodemailer: ^6.6.5
     react: ^17.0.2 || ^18
     react-dom: ^17.0.2 || ^18
   peerDependenciesMeta:
     nodemailer:
       optional: true
-  checksum: 10c0/e34c1a087b0ce06c7fbf44b50eb25e6efed55d71fb2ae4838d1e107b2b7c612cabb8a9c2167ba9302cd5daa224b09b643ac828337cb875c479eda2beb61df328
+  checksum: 10c0/3ba2cf707903af8a0571ba9e95389e8fb110308110589dfa07c7edcfc185f92b3046474991e18f63bdf990694cda7a583cd3b020f9b58243b2c0403f341cc21a
   languageName: node
   linkType: hard
 
@@ -5461,7 +5461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openid-client@npm:^5.1.0":
+"openid-client@npm:^5.4.0":
   version: 5.7.1
   resolution: "openid-client@npm:5.7.1"
   dependencies:
